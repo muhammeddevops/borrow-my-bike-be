@@ -6,6 +6,18 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+const uploadDir = "./uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+const upload = multer({ dest: "uploads/" });
+
+const dbaccesstoken =
+  "sl.BbbUH0pEw3cRa9QiW_2C5B1tHyznUPEN8AAc-NjO19KXuWwvDl0-L6cCJ_TaV-fRAEbjqhIjMCndiuZ9osFb1wfet6g6zvDEcpi2jIQATGV-C5n0FZjlAfAf-C0Qx9mgmiOXS1gi";
+
+const dbx = new Dropbox({ accessToken: dbaccesstoken });
+
 const app = express();
 
 const connStr =
@@ -57,10 +69,7 @@ const User = mongoose.model("User", userSchema);
 
 // Define the schema for the bikes
 const bikeSchema = new mongoose.Schema({
-  bike_owner: {
-    type: String,
-    required: true,
-  },
+  bike_owner: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   rented_by: {
     type: String,
   },
@@ -91,7 +100,6 @@ const bikeSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const Bike = mongoose.model("Bike", bikeSchema);
@@ -151,7 +159,6 @@ app.post("/api/bike", (req, res) => {
     description: req.body.description,
     qr_url: req.body.qr_url,
     bike_image_url: req.body.bike_image_url,
-    user: req.body.user._id,
   });
 
   newBike
@@ -186,6 +193,20 @@ app.get("/api/bikes/:id", (req, res) => {
       console.log(error);
       res.status(500).send(err);
     });
+});
+
+app.post("/api/bikephoto", upload.single("file"), (req, res) => {
+  console.log("console log in index")
+  const file = req.file;
+
+  fs.readFile(file.path, (err, contents) => {
+    if (err) return res.status(500).send(err);
+    dbx
+      .filesUpload({ path: `/${file.originalname}`, contents: contents })
+      .then((dbres) => {
+        console.log(dbres)
+      });
+  });
 });
 
 app.listen(9091, () => console.log("Server running on port 9091"));
