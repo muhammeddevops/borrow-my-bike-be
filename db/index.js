@@ -5,6 +5,10 @@ const Dropbox = require("dropbox").Dropbox;
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const auth = require("./server/route/aouth.js");
+const passport = require("passport");
 
 const uploadDir = "./uploads";
 if (!fs.existsSync(uploadDir)) {
@@ -37,6 +41,19 @@ app.use(cors());
 
 // set up middleware
 app.use(express.json());
+
+//storring session
+app.use(
+  session({
+    secret: "test_secret",
+    resave: false,
+    saveUninitalized: true,
+    store: MongoStore.create({ mongoUrl: connStr }),
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use("/api/auth", auth);
 
 // Define the schema for the users
 const userSchema = new mongoose.Schema({
@@ -222,3 +239,5 @@ app.listen(9090, () => console.log("Server running on port 9090"));
 //     type: mongoose.Schema.Types.ObjectId,
 //     ref: "User",
 //   },
+
+module.exports = { User };
