@@ -5,6 +5,10 @@ const Dropbox = require("dropbox").Dropbox;
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const {
+  handleWrongPathErrors,
+  handle500Errors,
+} = require("../errorHandlingControllers.js");
 
 const uploadDir = "./uploads";
 if (!fs.existsSync(uploadDir)) {
@@ -24,13 +28,13 @@ const connStr =
   "mongodb+srv://thereactorsmcr:Northcoders123@cluster1.nhdvvfk.mongodb.net/development";
 
 // connect to my MongoDB database
-mongoose
-  .connect(connStr, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Database connected"))
-  .catch((error) => console.log(`Error connecting to database: ${error}`));
+// mongoose
+//   .connect(connStr, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => console.log("Database connected"))
+//   .catch((error) => console.log(`Error connecting to database: ${error}`));
 
 // Allow all requests from any domain
 app.use(cors());
@@ -54,9 +58,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  linked_bike_id: {
-    type: String,
-  },
   credit_amount: {
     type: Number,
   },
@@ -70,15 +71,13 @@ const User = mongoose.model("User", userSchema);
 // Define the schema for the bikes
 const bikeSchema = new mongoose.Schema({
   bike_owner: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  rented_by: {
+  type: {
     type: String,
+    required: false,
   },
-  bike_type: {
-    type: String,
-    required: true,
-  },
+  rented_by: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   location: {
-    type: String,
+    type: Array,
     required: true,
   },
   time_available: {
@@ -110,7 +109,6 @@ app.post("/api/user", (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    linked_bike_id: req.body.linked_bike_id,
     credit_amount: req.body.credit_amount,
     avatar_img_url: req.body.avatar_img_url,
   });
@@ -149,10 +147,11 @@ app.get("/api/users", (req, res) => {
     });
 });
 
-app.post("/api/bike", (req, res) => {
+app.post("/api/bikes", (req, res) => {
   const newBike = new Bike({
     bike_owner: req.body.bike_owner,
-    bike_type: req.body.bike_type,
+    rented_by: req.body.rented_by,
+    type: req.body.bike_type,
     location: req.body.location,
     time_available: req.body.time_available,
     price: req.body.price,
@@ -164,21 +163,21 @@ app.post("/api/bike", (req, res) => {
   newBike
     .save()
     .then((savedBike) => {
-      res.status(201).json(savedBike);
+      res.status(201).send(savedBike);
     })
     .catch((err) => {
-      res.status(500).send({ err });
+      console.log(err);
+      res.status(500).send(err);
     });
 });
 
-app.get("/api/bikes", (req, res) => {
+app.get("/api/bikes", (req, res, next) => {
   Bike.find({})
     .then((bikes) => {
-      res.json(bikes);
+      res.status(200).json(bikes);
     })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).send(err);
+    .catch((next) => {
+      res.send({ status: 404, msg: "not found" });
     });
 });
 
@@ -218,7 +217,7 @@ app.post("/api/bikephoto", upload.single("file"), (req, res) => {
 
 app.listen(9090, () => console.log("Server running on port 9090"));
 
-//  user: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   },
+app.use(handleWrongPathErrors);
+app.use(handle500Errors);
+
+module.exports = app;
