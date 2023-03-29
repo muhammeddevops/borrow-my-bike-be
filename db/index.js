@@ -14,7 +14,7 @@ if (!fs.existsSync(uploadDir)) {
 const upload = multer({ dest: "uploads/" });
 
 const dbaccesstoken =
-  "sl.BbbUH0pEw3cRa9QiW_2C5B1tHyznUPEN8AAc-NjO19KXuWwvDl0-L6cCJ_TaV-fRAEbjqhIjMCndiuZ9osFb1wfet6g6zvDEcpi2jIQATGV-C5n0FZjlAfAf-C0Qx9mgmiOXS1gi";
+  "sl.Bbd7v1PCF-bXWDNorl_KGizifU7wsPrqTy9XiY4uf_5Cc6m6VjBJ7sFBBJAJc753kKIYs8kmwCtxd3gceas0VoQbMVOgABwaJtdXd-FvTfIPVR4sPAwOfZ-x0OYKC0C88GOGa19X";
 
 const dbx = new Dropbox({ accessToken: dbaccesstoken });
 
@@ -196,20 +196,27 @@ app.get("/api/bikes/:id", (req, res) => {
 });
 
 app.post("/api/bikephoto", upload.single("file"), (req, res) => {
-  console.log("console log in index")
   const file = req.file;
+  console.log(file);
 
   fs.readFile(file.path, (err, contents) => {
     if (err) return res.status(500).send(err);
     dbx
       .filesUpload({ path: `/${file.originalname}`, contents: contents })
-      .then((dbres) => {
-        console.log(dbres)
+      .then(() => {
+        const link = dbx
+          .sharingCreateSharedLinkWithSettings({
+            path: "/" + file.originalname,
+          })
+          .then((link) => {
+            const imageUrl = link?.result?.url?.replace("dl=0", "raw=1");
+            console.log(imageUrl);
+          });
       });
   });
 });
 
-app.listen(9091, () => console.log("Server running on port 9091"));
+app.listen(9090, () => console.log("Server running on port 9090"));
 
 //  user: {
 //     type: mongoose.Schema.Types.ObjectId,
