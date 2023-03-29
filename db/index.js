@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const {
   handleWrongPathErrors,
   handle500Errors,
+  handleBadRequestError,
 } = require("../errorHandlingControllers.js");
 
 const uploadDir = "./uploads";
@@ -73,7 +74,7 @@ const bikeSchema = new mongoose.Schema({
   bike_owner: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   type: {
     type: String,
-    required: false,
+    required: true,
   },
   rented_by: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   location: {
@@ -103,8 +104,7 @@ const bikeSchema = new mongoose.Schema({
 
 const Bike = mongoose.model("Bike", bikeSchema);
 
-app.post("/api/user", (req, res) => {
-  console.log(req);
+app.post("/api/users", (req, res, next) => {
   const newUser = new User({
     username: req.body.username,
     email: req.body.email,
@@ -119,6 +119,7 @@ app.post("/api/user", (req, res) => {
       res.status(201).json(savedUser);
     })
     .catch((err) => {
+      next(err);
       res.status(500).send(err);
     });
 });
@@ -136,10 +137,10 @@ app.get("/api/users/:id", (req, res) => {
     });
 });
 
-app.get("/api/users", (req, res) => {
+app.get("/api/users", (req, res, next) => {
   User.find({})
     .then((users) => {
-      res.json(users);
+      res.status(200).json(users);
     })
     .catch((error) => {
       console.log(error);
@@ -147,11 +148,11 @@ app.get("/api/users", (req, res) => {
     });
 });
 
-app.post("/api/bikes", (req, res) => {
+app.post("/api/bikes", (req, res, next) => {
   const newBike = new Bike({
     bike_owner: req.body.bike_owner,
     rented_by: req.body.rented_by,
-    type: req.body.bike_type,
+    type: req.body.type,
     location: req.body.location,
     time_available: req.body.time_available,
     price: req.body.price,
@@ -165,10 +166,7 @@ app.post("/api/bikes", (req, res) => {
     .then((savedBike) => {
       res.status(201).send(savedBike);
     })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err);
-    });
+    .catch(next);
 });
 
 app.get("/api/bikes", (req, res, next) => {
@@ -188,10 +186,7 @@ app.get("/api/bikes/:id", (req, res) => {
     .then((bike) => {
       res.json(bike);
     })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).send(err);
-    });
+    .catch(next);
 });
 
 app.post("/api/bikephoto", upload.single("file"), (req, res) => {
@@ -218,6 +213,6 @@ app.post("/api/bikephoto", upload.single("file"), (req, res) => {
 app.listen(9090, () => console.log("Server running on port 9090"));
 
 app.use(handleWrongPathErrors);
+app.use(handleBadRequestError);
 app.use(handle500Errors);
-
 module.exports = app;
