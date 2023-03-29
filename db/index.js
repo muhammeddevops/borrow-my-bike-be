@@ -7,8 +7,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const auth = require("./server/route/aouth.js");
-const passport = require("passport");
+const { router } = require("./server/route/aouth.js");
+const {passport} = require("./server/passport/setup");
 
 const uploadDir = "./uploads";
 if (!fs.existsSync(uploadDir)) {
@@ -53,7 +53,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use("/api/auth", auth);
+app.use("/api/auth", router);
 
 // Define the schema for the users
 const userSchema = new mongoose.Schema({
@@ -82,7 +82,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("users", userSchema);
 
 // Define the schema for the bikes
 const bikeSchema = new mongoose.Schema({
@@ -240,4 +240,4 @@ app.listen(9090, () => console.log("Server running on port 9090"));
 //     ref: "User",
 //   },
 
-module.exports = { User };
+module.exports = User ;
