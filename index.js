@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const router = require("./server/route/aouth.js");
-const passport = require("./server/passport/setup");
+const router = require("./db/server/route/aouth.js");
+const passport = require("./db/server/passport/setup");
 const multer = require("multer");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -12,21 +12,21 @@ const {
   handle500Errors,
   handleBadRequestError,
   handleCustomErrors,
-} = require("../errorHandlingControllers.js");
-const { loginUserController } = require("./controllers/user.controllers");
+} = require("./errorHandlingControllers.js");
+const { loginUserController } = require("./db/controllers/user.controllers");
 
 const {
   postNewUserController,
   getUserInfoController,
   getAllUsersController,
-} = require("./controllers/user.controllers");
+} = require("./db/controllers/user.controllers");
 const {
   postNewBikeController,
   getAllBikesController,
   getBikeByIdController,
   postNewBikePhotoController,
   patchBikeController,
-} = require("./controllers/bike.controllers");
+} = require("./db/controllers/bike.controllers");
 
 const upload = multer({ dest: "uploads/" });
 
