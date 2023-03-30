@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-
-const connStr =
-  "mongodb+srv://thereactorsmcr:Northcoders123@cluster1.nhdvvfk.mongodb.net/test";
-
+const dotenv = require("dotenv");
+dotenv.config();
+console.log(process.env.MONGODB_URI);
 mongoose
-  .connect(connStr, {
+  .connect(process.env.MONGODB_URI, {
+    dbName: "test",
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

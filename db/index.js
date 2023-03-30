@@ -5,6 +5,8 @@ const MongoStore = require("connect-mongo");
 const router = require("./server/route/aouth.js");
 const passport = require("./server/passport/setup");
 const multer = require("multer");
+const dotenv = require("dotenv");
+dotenv.config();
 const {
   handleWrongPathErrors,
   handle500Errors,
@@ -26,9 +28,6 @@ const {
   patchBikeController,
 } = require("./controllers/bike.controllers");
 
-const connStr =
-  "mongodb+srv://thereactorsmcr:Northcoders123@cluster1.nhdvvfk.mongodb.net/development";
-
 const upload = multer({ dest: "uploads/" });
 
 const app = express();
@@ -45,7 +44,7 @@ app.use(
     secret: "test_secret",
     resave: false,
     saveUninitalized: false,
-    store: MongoStore.create({ mongoUrl: connStr }),
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
   })
 );
 app.use(passport.initialize());

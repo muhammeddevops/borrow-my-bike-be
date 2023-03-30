@@ -1,8 +1,6 @@
 const request = require("supertest");
 const { mongoose } = require("mongoose");
 const app = require("../db/index");
-const connStr =
-  "mongodb+srv://thereactorsmcr:Northcoders123@cluster1.nhdvvfk.mongodb.net/test";
 
 // beforeAll(() => {
 //   mongoose
