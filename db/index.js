@@ -9,6 +9,7 @@ const {
   handleWrongPathErrors,
   handle500Errors,
   handleBadRequestError,
+  handleCustomErrors,
 } = require("../errorHandlingControllers.js");
 const { loginUserController } = require("./controllers/user.controllers");
 
@@ -22,6 +23,7 @@ const {
   getAllBikesController,
   getBikeByIdController,
   postNewBikePhotoController,
+  patchBikeController,
 } = require("./controllers/bike.controllers");
 
 const connStr =
@@ -65,13 +67,13 @@ app.post("/api/auth/login", (req, res, next) => {
   })(req, res, next);
 });
 
-app.post("/api/user", postNewUserController);
+app.post("/api/users", postNewUserController);
 
 app.get("/api/users/:id", getUserInfoController);
 
 app.get("/api/users", getAllUsersController);
 
-app.post("/api/bike", postNewBikeController);
+app.post("/api/bikes", postNewBikeController);
 
 app.get("/api/bikes", getAllBikesController);
 
@@ -79,8 +81,11 @@ app.get("/api/bikes/:id", getBikeByIdController);
 
 app.post("/api/bikephoto", upload.single("file"), postNewBikePhotoController);
 
-app.use(handleWrongPathErrors);
+app.patch("/api/bikes/:id", patchBikeController);
+
+app.all("*", handleWrongPathErrors);
 app.use(handleBadRequestError);
+app.use(handleCustomErrors);
 app.use(handle500Errors);
 module.exports = app;
 

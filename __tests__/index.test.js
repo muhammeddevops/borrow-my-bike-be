@@ -1,16 +1,22 @@
 const request = require("supertest");
-const app = require("../db/index.js");
-const jestSorted = require("jest-sorted");
 const { mongoose } = require("mongoose");
-const DB = require("../db/connection");
-const ObjectId = require("mongoose").Types.ObjectId;
+const app = require("../db/index");
+const connStr =
+  "mongodb+srv://thereactorsmcr:Northcoders123@cluster1.nhdvvfk.mongodb.net/test";
 
-// beforeAll(async () => {
-//   await connectDB(connStr);
+// beforeAll(() => {
+//   mongoose
+//     .connect(connStr, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     })
+//     .then(() => console.log("Database connected"))
+//     .catch((error) => console.log(`Error connecting to database: ${error}`));
 // });
 
-// afterAll(async () => {
-//   await disconnectDB();
+// afterAll(() => {
+//   mongoose.connection.close();
+//   app.close();
 // });
 
 describe("App", () => {
@@ -30,7 +36,6 @@ describe("App", () => {
         .get("/api/bikees")
         .expect(404)
         .then(({ body }) => {
-          console.log(body);
           expect(body.msg).toBe("Path not found");
         });
     });
@@ -54,7 +59,6 @@ describe("App", () => {
         .send(newBike)
         .expect(201)
         .then(({ body }) => {
-          console.log(body);
           expect(body).toMatchObject({
             bike_owner: expect.any(Array),
             type: expect.any(String),
@@ -83,7 +87,6 @@ describe("App", () => {
         .send(newBike)
         .expect(201)
         .then(({ body }) => {
-          console.log(body);
           expect(body).toMatchObject({
             bike_owner: expect.any(Array),
             type: expect.any(String),
@@ -128,7 +131,6 @@ describe("App", () => {
         .send(newBike)
         .expect(400)
         .then(({ body }) => {
-          console.log(body);
           expect(body.msg).toBe("Bad request");
         });
     });
@@ -153,11 +155,11 @@ describe("App", () => {
         });
     });
   });
-  describe.skip("POST : api/users", () => {
+  describe("POST : api/users", () => {
     it("should return 201 status and a posted user", () => {
       const newUser = {
-        username: "Johnny",
-        email: "Johnyyyyy@gmail.com",
+        username: "tom",
+        email: "tom@gmail.com",
         password: "omgthisdismypassword123",
         credit_amount: 200,
         avatar_img_url: "a really cool image",
@@ -168,6 +170,7 @@ describe("App", () => {
         .send(newUser)
         .expect(201)
         .then(({ body }) => {
+          console.log(body);
           expect(body).toMatchObject({
             username: expect.any(String),
             email: expect.any(String),
@@ -179,8 +182,8 @@ describe("App", () => {
     });
     it("should return a 201 when non-required fields are ommited", () => {
       const newUser = {
-        username: "Haider",
-        email: "Haiiiider@gmail.com",
+        username: "haryyyy",
+        email: "haryyyyyy@gmail.com",
         password: "lalalalala",
       };
 
@@ -197,7 +200,7 @@ describe("App", () => {
         });
     });
   });
-  describe.only("GET : api/bikes/bike_id", () => {
+  describe("GET : api/bikes/id", () => {
     it("should return a 200 status and the correct bike containing the correct id", () => {
       return request(app)
         .get("/api/bikes/6424332c7cef0378c79859c3")
@@ -221,6 +224,35 @@ describe("App", () => {
     it("should return a 404 error if the id does not exist", () => {
       return request(app)
         .get("/api/bikes/645520f1a301556a1e0c9fdf")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path not found");
+        });
+    });
+  });
+  describe("PATCH : api/bikes/id", () => {
+    it("should return a 201 status and the correct updated bike", () => {
+      const rented_by = { rented_by: "64255f83b93dedd0c5f13f6d" };
+      return request(app)
+        .patch("/api/bikes/642417bcaafad154467747ab")
+        .send(rented_by)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            acknowledged: true,
+            modifiedCount: 0,
+            upsertedId: null,
+            upsertedCount: 0,
+            matchedCount: 1,
+          });
+        });
+    });
+    it("should return 404 when bike id is not found", () => {
+      const rented_by = { rented_by: "64255f83b93dedd0c5f13f6d" };
+
+      return request(app)
+        .patch("/api/bikes/642777bcaafad154467747ab")
+        .send(rented_by)
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Path not found");

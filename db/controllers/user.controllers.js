@@ -1,46 +1,40 @@
 const userModel = require("../models/user.models");
 const bcryptJs = require("bcryptjs");
+const {
+  postNewUser,
+  fetchUserById,
+  fetchAllUsers,
+} = require("../models/user.queries.models");
 
 exports.postNewUserController = (req, res, next) => {
   const hashedPassword = bcryptJs.hashSync(req.body.password, 10);
-
-  const newUser = new userModel({
-    username: req.body.username,
-    email: req.body.email,
-    password: hashedPassword,
-    credit_amount: req.body.credit_amount,
-    avatar_img_url: req.body.avatar_img_url,
-  });
-  newUser
-    .save()
+  postNewUser(req.body, hashedPassword)
     .then((savedUser) => {
       res.status(201).json(savedUser);
     })
-    .catch((err) => {
-      res.status(500).send(err);
+    .catch((error) => {
+      next(error);
     });
 };
 
 exports.getUserInfoController = (req, res) => {
   const { id } = req.params;
-  userModel
-    .find({ _id: id })
+  fetchUserById(id)
     .then((user) => {
       res.json(user);
     })
     .catch((error) => {
-      res.status(500).send("error");
+      next(error);
     });
 };
 
 exports.getAllUsersController = (req, res) => {
-  userModel
-    .find({})
+  fetchAllUsers()
     .then((users) => {
       res.status(200).json(users);
     })
     .catch((error) => {
-      res.status(500).send("error");
+      next(error);
     });
 };
 
