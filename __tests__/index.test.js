@@ -2,20 +2,16 @@ const request = require("supertest");
 const app = require("../db/index.js");
 const jestSorted = require("jest-sorted");
 const { mongoose } = require("mongoose");
+const DB = require("../db/connection");
 const ObjectId = require("mongoose").Types.ObjectId;
 
-const { connectDB, disconnectDB } = require("../connection.js");
+// beforeAll(async () => {
+//   await connectDB(connStr);
+// });
 
-const connStr =
-  "mongodb+srv://thereactorsmcr:Northcoders123@cluster1.nhdvvfk.mongodb.net/test";
-
-beforeAll(async () => {
-  await connectDB(connStr);
-});
-
-afterAll(async () => {
-  await disconnectDB();
-});
+// afterAll(async () => {
+//   await disconnectDB();
+// });
 
 describe("App", () => {
   describe("GET: /api/bikes", () => {
