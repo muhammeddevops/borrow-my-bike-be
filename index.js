@@ -87,5 +87,3 @@ app.use(handleBadRequestError);
 app.use(handleCustomErrors);
 app.use(handle500Errors);
 module.exports = app;
-
-app.listen(9090, () => console.log("Server running on port 9090"));
