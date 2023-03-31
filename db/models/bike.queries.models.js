@@ -36,7 +36,8 @@ exports.postNewBike = (body) => {
     price: body.price,
     description: body.description,
     qr_url: body.qr_url,
-    bike_image_url: body.bike_image_url,
+    bike_img_url: body.bike_img_url,
+    is_available: body.is_available,
   });
 
   return newBike.save().then((savedBike) => {
@@ -69,9 +70,12 @@ exports.postNewBikePhoto = (file) => {
   });
 };
 
-exports.updateBike = (id, rented_by) => {
+exports.updateBike = (id, rented_by, is_available) => {
   return bikeModel
-    .updateOne({ _id: id }, { $set: { rented_by: rented_by } })
+    .updateOne(
+      { _id: id },
+      { $set: { rented_by: rented_by, is_available: is_available } }
+    )
     .then((updateBike) => {
       console.log(updateBike);
       if (updateBike.matchedCount === 0) {

@@ -47,8 +47,8 @@ exports.postNewBikePhotoController = (req, res, next) => {
 
 exports.patchBikeController = (req, res, next) => {
   const { id } = req.params;
-  const { rented_by } = req.body;
-  updateBike(id, rented_by)
+  const { rented_by, is_available } = req.body;
+  updateBike(id, rented_by, is_available)
     .then((updatedBike) => {
       res.status(201).send(updatedBike);
     })

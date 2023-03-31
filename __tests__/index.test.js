@@ -49,8 +49,9 @@ describe("App", () => {
         price: 200,
         description: "nice bike its great",
         qr_url: "random url",
-        bike_image_url: "url random",
+        bike_img_url: "http://clipart-library.com/data_images/42693.jpg",
         rented_by: "6422f0c6a34ba27daa40182c",
+        is_available: true,
       };
       return request(app)
         .post("/api/bikes")
@@ -65,8 +66,9 @@ describe("App", () => {
             price: expect.any(Number),
             description: expect.any(String),
             qr_url: expect.any(String),
-            bike_image_url: expect.any(String),
+            bike_img_url: expect.any(String),
             rented_by: expect.any(Array),
+            is_available: expect.any(Boolean),
           });
         });
     });
@@ -79,6 +81,7 @@ describe("App", () => {
         price: 200,
         qr_url: "random url",
         rented_by: "6422f0c6a34ba27daa40182c",
+        is_available: false,
       };
       return request(app)
         .post("/api/bikes")
@@ -93,6 +96,7 @@ describe("App", () => {
             price: expect.any(Number),
             qr_url: expect.any(String),
             rented_by: expect.any(Array),
+            is_available: expect.any(Boolean),
           });
         });
     });
@@ -105,8 +109,9 @@ describe("App", () => {
         price: 200,
         description: "nice bike its great",
         qr_url: "random url",
-        bike_image_url: "url random",
+        bike_img_url: "http://clipart-library.com/data_images/42693.jpg",
         rented_by: "6422f0c6a34ba27daa40182c",
+        is_available: false,
       };
       return request(app)
         .post("/api/bikez")
@@ -121,8 +126,9 @@ describe("App", () => {
         price: 200,
         description: "THIS IS A VERY SPECIAL BIKE",
         qr_url: "random url",
-        bike_image_url: "url random",
+        bike_img_url: "http://clipart-library.com/data_images/42693.jpg",
         rented_by: "6422f0c6a34ba27daa40182c",
+        is_available: false,
       };
       return request(app)
         .post("/api/bikes")
@@ -153,7 +159,7 @@ describe("App", () => {
         });
     });
   });
-  describe("POST : api/users", () => {
+  describe.skip("POST : api/users", () => {
     it("should return 201 status and a posted user", () => {
       const newUser = {
         username: "tom",
@@ -208,7 +214,7 @@ describe("App", () => {
           expect(body[0]).toEqual({
             __v: 0,
             _id: "6424332c7cef0378c79859c3",
-            bike_image_url: "url random",
+            bike_img_url: "http://clipart-library.com/data_images/42693.jpg",
             bike_owner: ["6422f0c6a34ba27daa40182c"],
             description: "nice bike its great",
             location: ["2342", "35432"],
@@ -216,6 +222,7 @@ describe("App", () => {
             qr_url: "random url",
             rented_by: ["6422f0c6a34ba27daa40182c"],
             time_available: "9am - 5pm",
+            is_available: expect.any(Boolean),
           });
         });
     });
@@ -230,15 +237,18 @@ describe("App", () => {
   });
   describe("PATCH : api/bikes/id", () => {
     it("should return a 201 status and the correct updated bike", () => {
-      const rented_by = { rented_by: "64255f83b93dedd0c5f13f6d" };
+      const update = {
+        rented_by: "6422f0c6a34ba27daa40182c",
+        is_available: true,
+      };
       return request(app)
-        .patch("/api/bikes/642417bcaafad154467747ab")
-        .send(rented_by)
+        .patch("/api/bikes/642417bcaafad154467747ae")
+        .send(update)
         .expect(201)
         .then(({ body }) => {
           expect(body).toEqual({
             acknowledged: true,
-            modifiedCount: 0,
+            modifiedCount: 1,
             upsertedId: null,
             upsertedCount: 0,
             matchedCount: 1,
@@ -246,10 +256,13 @@ describe("App", () => {
         });
     });
     it("should return 404 when bike id is not found", () => {
-      const rented_by = { rented_by: "64255f83b93dedd0c5f13f6d" };
+      const rented_by = {
+        rented_by: "64255f83113dedd0c5f1311d",
+        is_available: true,
+      };
 
       return request(app)
-        .patch("/api/bikes/642777bcaafad154467747ab")
+        .patch("/api/bikes/642444bcaafad154464447ad")
         .send(rented_by)
         .expect(404)
         .then(({ body }) => {

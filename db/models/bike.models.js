@@ -22,14 +22,19 @@ const bikeSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required: false,
   },
   qr_url: {
     type: String,
     required: true,
   },
-  bike_image_url: {
+  bike_img_url: {
     type: String,
     required: false,
+  },
+  is_available: {
+    type: Boolean,
+    required: true,
   },
 });
 
