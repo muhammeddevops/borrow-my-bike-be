@@ -238,7 +238,7 @@ describe("App", () => {
   describe("PATCH : api/bikes/id", () => {
     it("should return a 201 status and the correct updated bike", () => {
       const update = {
-        rented_by: "6422f0c6a34ba27daa40182c",
+        rented_by: "6422f0c6a34ba27daa401831",
         is_available: true,
       };
       return request(app)

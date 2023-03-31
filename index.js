@@ -61,7 +61,14 @@ app.post("/api/auth/login", (req, res, next) => {
       if (err) {
         return res.status(400).json({ errors: "logIn err" });
       }
-      return res.status(200).json({ success: `logged in ${user.id}` });
+      return res.status(200).json({
+        success: {
+          id: user.id,
+          username: user.username,
+          img: user.avatar_img_url || "no image",
+          credit_amount: user.credit_amount || 0,
+        },
+      });
     });
   })(req, res, next);
 });
