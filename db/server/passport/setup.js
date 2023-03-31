@@ -6,7 +6,7 @@ const session = require("express-session");
 
 passport.use(
   new LocalStrategy((username, password, done) => {
-    User.findOne({ username: username }, ).then((user) => {
+    User.findOne({ username: username }).then((user) => {
       bcryptJs.compare(password, user.password, (err, isMatch) => {
         if (isMatch) {
           return done(null, user);

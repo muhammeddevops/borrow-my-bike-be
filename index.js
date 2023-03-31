@@ -55,7 +55,7 @@ app.post("/api/auth/login", (req, res, next) => {
       return res.status(400).json({ errors: "err in auth" });
     }
     if (!user) {
-      return res.status(400).json({ errors: "No user found" });
+      return res.status(400).json({ errors: "Username or password incorrect" });
     }
     req.logIn(user, function (err) {
       if (err) {
