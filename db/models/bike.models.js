@@ -36,6 +36,10 @@ const bikeSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  combination: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Bike = mongoose.model("Bike", bikeSchema);
