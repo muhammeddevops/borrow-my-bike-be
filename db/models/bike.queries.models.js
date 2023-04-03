@@ -1,4 +1,4 @@
-const bikeModel = require("../models/bike.models");
+const { bikeModel, reviewModel } = require("../models/bike.models");
 const fs = require("fs");
 const multer = require("multer");
 const { db } = require("../models/bike.models");
@@ -80,4 +80,17 @@ exports.updateBike = (id, rented_by) => {
         return updateBike;
       }
     });
+};
+
+exports.addReview = (body) => {
+  const newReview = new reviewModel({
+    review_title: body.review_title,
+    review_body: body.review_body,
+    user: body.user,
+  });
+
+  return newReview
+    .save()
+    .then((savedReview) => savedReview)
+    .catch((err) => console.log(err));
 };
