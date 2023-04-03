@@ -33,6 +33,20 @@ const bikeSchema = new mongoose.Schema({
   },
 });
 
-const Bike = mongoose.model("Bike", bikeSchema);
+const bikeModel = mongoose.model("Bike", bikeSchema);
 
-module.exports = Bike;
+const reviewSchema = new mongoose.Schema({
+  review_title: {
+    type: String,
+    required: true,
+  },
+  review_body: {
+    type: String,
+    required: true,
+  },
+  user: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+});
+
+const reviewModel = mongoose.model("Review", reviewSchema);
+
+module.exports = { bikeModel, reviewModel };

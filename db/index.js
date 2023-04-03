@@ -24,6 +24,7 @@ const {
   getBikeByIdController,
   postNewBikePhotoController,
   patchBikeController,
+  postNewReview,
 } = require("./controllers/bike.controllers");
 
 const connStr =
@@ -82,6 +83,8 @@ app.get("/api/bikes/:id", getBikeByIdController);
 app.post("/api/bikephoto", upload.single("file"), postNewBikePhotoController);
 
 app.patch("/api/bikes/:id", patchBikeController);
+
+app.post("/api/reviews", postNewReview);
 
 app.all("*", handleWrongPathErrors);
 app.use(handleBadRequestError);

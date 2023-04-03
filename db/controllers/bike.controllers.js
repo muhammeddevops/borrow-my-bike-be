@@ -5,6 +5,7 @@ const {
   fetchAllBikes,
   postNewBikePhoto,
   updateBike,
+  addReview,
 } = require("../models/bike.queries.models");
 
 exports.postNewBikeController = (req, res, next) => {
@@ -53,6 +54,19 @@ exports.patchBikeController = (req, res, next) => {
       res.status(201).send(updatedBike);
     })
     .catch((error) => {
+      next(error);
+    });
+};
+
+exports.postNewReview = (req, res, next) => {
+  console.log("in controllers");
+  console.log(req.body);
+  addReview(req.body)
+    .then((savedReview) => {
+      res.status(201).json(savedReview);
+    })
+    .catch((error) => {
+      console.log(error);
       next(error);
     });
 };
