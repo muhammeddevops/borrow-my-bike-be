@@ -38,6 +38,7 @@ exports.postNewBike = (body) => {
     qr_url: body.qr_url,
     bike_img_url: body.bike_img_url,
     is_available: body.is_available,
+    combination: body.combination,
   });
 
   return newBike.save().then((savedBike) => {
