@@ -35,7 +35,6 @@ exports.postNewBike = (body) => {
     time_available: body.time_available,
     price: body.price,
     description: body.description,
-    qr_url: body.qr_url,
     bike_img_url: body.bike_img_url,
     is_available: body.is_available,
     combination: body.combination,

@@ -24,10 +24,6 @@ const bikeSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  qr_url: {
-    type: String,
-    required: true,
-  },
   bike_img_url: {
     type: String,
     required: false,
