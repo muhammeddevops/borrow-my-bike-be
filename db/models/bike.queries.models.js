@@ -12,7 +12,7 @@ if (!fs.existsSync(uploadDir)) {
 const upload = multer({ dest: "uploads/" });
 
 const dbaccesstoken =
-  "sl.Bbd7v1PCF-bXWDNorl_KGizifU7wsPrqTy9XiY4uf_5Cc6m6VjBJ7sFBBJAJc753kKIYs8kmwCtxd3gceas0VoQbMVOgABwaJtdXd-FvTfIPVR4sPAwOfZ-x0OYKC0C88GOGa19X";
+  "sl.Bb649ff4kYFieAyy9vPe9NXkA12GrQXr8ZCi_j-APthjHBXyqXdJ7yPsAWC754x0JE0IgIUJpYDh4HLmH8fj1NxzHuqum7iLpZmIqqE-ss74QZOvCggKsHn9yN7CnSne_J3dWIyhs6M";
 
 const dbx = new Dropbox({ accessToken: dbaccesstoken });
 
